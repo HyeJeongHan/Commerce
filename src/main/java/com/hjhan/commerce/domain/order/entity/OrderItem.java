@@ -23,7 +23,7 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     // 주문 시점의 상품명과 가격을 스냅샷으로 저장

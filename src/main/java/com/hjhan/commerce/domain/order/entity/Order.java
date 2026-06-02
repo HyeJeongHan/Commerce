@@ -49,7 +49,7 @@ public class Order extends BaseTimeEntity {
 
     public void pay() {
         if (this.status != OrderStatus.PENDING) {
-            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
+            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_PAID);
         }
         this.status = OrderStatus.PAID;
     }
@@ -59,7 +59,9 @@ public class Order extends BaseTimeEntity {
     }
 
     public void cancel(Runnable restoreStock) {
-        if (this.status == OrderStatus.SHIPPED || this.status == OrderStatus.DELIVERED) {
+        if (this.status == OrderStatus.CANCELLED
+                || this.status == OrderStatus.SHIPPED
+                || this.status == OrderStatus.DELIVERED) {
             throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
         }
         restoreStock.run();

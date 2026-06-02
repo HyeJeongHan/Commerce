@@ -64,7 +64,7 @@ public class ProductService {
         product.changeStatus(ProductStatus.INACTIVE);
     }
 
-    public Product getProduct(Long id) {
+    private Product getProduct(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
     }

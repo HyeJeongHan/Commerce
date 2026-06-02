@@ -3,8 +3,6 @@ package com.hjhan.commerce.domain.order.service;
 import com.hjhan.commerce.domain.cart.entity.Cart;
 import com.hjhan.commerce.domain.cart.entity.CartItem;
 import com.hjhan.commerce.domain.cart.service.CartService;
-import com.hjhan.commerce.domain.member.entity.Member;
-import com.hjhan.commerce.domain.member.repository.MemberRepository;
 import com.hjhan.commerce.domain.order.dto.OrderResponse;
 import com.hjhan.commerce.domain.order.entity.Order;
 import com.hjhan.commerce.domain.order.entity.OrderItem;
@@ -32,7 +30,6 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final StockRepository stockRepository;
-    private final MemberRepository memberRepository;
     private final CartService cartService;
 
     @PersistenceContext
@@ -47,11 +44,8 @@ public class OrderService {
             throw new BusinessException(ErrorCode.EMPTY_CART);
         }
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-
         BigDecimal totalPrice = BigDecimal.ZERO;
-        Order order = Order.create(member, BigDecimal.ZERO);
+        Order order = Order.create(cart.getMember(), BigDecimal.ZERO);
         orderRepository.save(order);
 
         for (CartItem cartItem : cartItems) {

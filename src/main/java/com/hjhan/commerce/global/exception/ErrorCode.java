@@ -19,6 +19,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다"),
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 올바르지 않습니다"),
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다"),
 
     // Product
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "상품을 찾을 수 없습니다"),
@@ -32,6 +33,7 @@ public enum ErrorCode {
 
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다"),
+    ORDER_CANNOT_BE_PAID(HttpStatus.CONFLICT, "결제할 수 없는 주문 상태입니다"),
     ORDER_CANNOT_BE_CANCELLED(HttpStatus.CONFLICT, "취소할 수 없는 주문 상태입니다"),
     EMPTY_CART(HttpStatus.BAD_REQUEST, "장바구니가 비어 있습니다"),
 

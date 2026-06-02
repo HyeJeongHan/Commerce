@@ -36,10 +36,10 @@ public class MemberService {
 
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         String token = jwtProvider.createAccessToken(member.getId(), member.getRole().name());
