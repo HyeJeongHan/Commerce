@@ -3,27 +3,29 @@ spring:
     name: commerce
 
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/commerce
-    username: root
-    password: root
+    url: jdbc:mysql://${MYSQLHOST:127.0.0.1}:${MYSQLPORT:3306}/${MYSQLDATABASE:commerce}?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: ${MYSQLUSER:root}
+    password: ${MYSQLPASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
-    show-sql: true
+    show-sql: false
     open-in-view: false
 
+server:
+  port: ${PORT:8080}
+
 jwt:
-  secret: commerce-secret-key-for-jwt-authentication-must-be-at-least-256-bits
-  access-token-expiration: 1800000    # 30분
-  refresh-token-expiration: 604800000 # 7일
+  secret: ${JWT_SECRET:commerce-secret-key-for-jwt-authentication-must-be-at-least-256-bits}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:1800000}
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
 logging:
   level:
-    com.hjhan.commerce: DEBUG
-    org.hibernate.SQL: DEBUG
+    com.hjhan.commerce: INFO
+    org.hibernate.SQL: WARN

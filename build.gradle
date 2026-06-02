@@ -57,6 +57,10 @@ dependencyManagement {
     }
 }
 
+jar {
+    enabled = false  // plain jar 생성 비활성화 (bootJar만 사용)
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
