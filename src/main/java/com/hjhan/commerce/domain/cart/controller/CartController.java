@@ -1,6 +1,7 @@
 package com.hjhan.commerce.domain.cart.controller;
 
 import com.hjhan.commerce.domain.cart.dto.CartAddRequest;
+import com.hjhan.commerce.domain.cart.dto.CartItemUpdateRequest;
 import com.hjhan.commerce.domain.cart.dto.CartResponse;
 import com.hjhan.commerce.domain.cart.service.CartService;
 import com.hjhan.commerce.global.response.ApiResponse;
@@ -27,6 +28,13 @@ public class CartController {
     public ApiResponse<CartResponse> addItem(@AuthenticationPrincipal Long memberId,
                                              @RequestBody @Valid CartAddRequest request) {
         return ApiResponse.ok(cartService.addItem(memberId, request));
+    }
+
+    @PatchMapping("/items/{cartItemId}")
+    public ApiResponse<CartResponse> updateItemQuantity(@AuthenticationPrincipal Long memberId,
+                                                        @PathVariable Long cartItemId,
+                                                        @RequestBody @Valid CartItemUpdateRequest request) {
+        return ApiResponse.ok(cartService.updateItemQuantity(memberId, cartItemId, request));
     }
 
     @DeleteMapping("/items/{cartItemId}")

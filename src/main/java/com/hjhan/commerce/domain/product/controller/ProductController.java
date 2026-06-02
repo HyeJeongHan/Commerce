@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
@@ -30,8 +32,12 @@ public class ProductController {
 
     @GetMapping
     public ApiResponse<Page<ProductResponse>> findAll(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @PageableDefault(size = 20, sort = "id") Pageable pageable) {
-        return ApiResponse.ok(productService.findAll(pageable));
+        return ApiResponse.ok(productService.search(keyword, categoryId, minPrice, maxPrice, pageable));
     }
 
     @GetMapping("/{id}")

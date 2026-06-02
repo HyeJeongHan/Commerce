@@ -4,6 +4,7 @@ import com.hjhan.commerce.domain.cart.entity.Cart;
 import com.hjhan.commerce.domain.cart.entity.CartItem;
 import com.hjhan.commerce.domain.cart.service.CartService;
 import com.hjhan.commerce.domain.order.dto.OrderResponse;
+import com.hjhan.commerce.domain.order.entity.OrderStatus;
 import com.hjhan.commerce.domain.order.entity.Order;
 import com.hjhan.commerce.domain.order.entity.OrderItem;
 import com.hjhan.commerce.domain.order.repository.OrderRepository;
@@ -102,6 +103,13 @@ public class OrderService {
             }
         });
 
+        return OrderResponse.from(order);
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(Long orderId, OrderStatus newStatus) {
+        Order order = getOrderEntity(orderId);
+        order.adminUpdateStatus(newStatus);
         return OrderResponse.from(order);
     }
 

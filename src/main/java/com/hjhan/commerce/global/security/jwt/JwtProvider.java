@@ -20,6 +20,9 @@ public class JwtProvider {
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
 
+    @Value("${jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
+
     private SecretKey key;
 
     @PostConstruct
@@ -35,6 +38,24 @@ public class JwtProvider {
                 .expiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)
                 .compact();
+    }
+
+    public String createRefreshToken(Long memberId) {
+        return Jwts.builder()
+                .subject(String.valueOf(memberId))
+                .claim("type", "refresh")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(key)
+                .compact();
+    }
+
+    public Long getMemberIdFromRefreshToken(String token) {
+        Claims claims = parseToken(token);
+        if (!"refresh".equals(claims.get("type", String.class))) {
+            throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+        return Long.parseLong(claims.getSubject());
     }
 
     public Claims parseToken(String token) {

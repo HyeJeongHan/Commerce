@@ -58,6 +58,13 @@ public class Order extends BaseTimeEntity {
         this.totalPrice = totalPrice;
     }
 
+    public void adminUpdateStatus(OrderStatus newStatus) {
+        if (this.status == OrderStatus.CANCELLED) {
+            throw new BusinessException(ErrorCode.ORDER_CANNOT_BE_CANCELLED);
+        }
+        this.status = newStatus;
+    }
+
     public void cancel(Runnable restoreStock) {
         if (this.status == OrderStatus.CANCELLED
                 || this.status == OrderStatus.SHIPPED

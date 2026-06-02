@@ -1,6 +1,7 @@
 package com.hjhan.commerce.domain.cart.service;
 
 import com.hjhan.commerce.domain.cart.dto.CartAddRequest;
+import com.hjhan.commerce.domain.cart.dto.CartItemUpdateRequest;
 import com.hjhan.commerce.domain.cart.dto.CartResponse;
 import com.hjhan.commerce.domain.cart.entity.Cart;
 import com.hjhan.commerce.domain.cart.entity.CartItem;
@@ -57,6 +58,20 @@ public class CartService {
                 );
 
         return CartResponse.from(cart);
+    }
+
+    @Transactional
+    public CartResponse updateItemQuantity(Long memberId, Long cartItemId, CartItemUpdateRequest request) {
+        CartItem item = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+        if (!item.getCart().getMember().getId().equals(memberId)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        item.updateQuantity(request.quantity());
+
+        return CartResponse.from(cartRepository.findByMemberIdWithItems(memberId).orElseThrow());
     }
 
     @Transactional

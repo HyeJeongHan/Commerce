@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -30,5 +32,17 @@ public class AuthController {
     @GetMapping("/members/me")
     public ApiResponse<MemberResponse> getMyInfo(@AuthenticationPrincipal Long memberId) {
         return ApiResponse.ok(memberService.getMyInfo(memberId));
+    }
+
+    @PutMapping("/members/password")
+    @ResponseStatus(NO_CONTENT)
+    public void changePassword(@AuthenticationPrincipal Long memberId,
+                               @RequestBody @Valid PasswordChangeRequest request) {
+        memberService.changePassword(memberId, request);
+    }
+
+    @PostMapping("/auth/refresh")
+    public ApiResponse<TokenResponse> refresh(@RequestBody @Valid RefreshTokenRequest request) {
+        return ApiResponse.ok(memberService.refresh(request));
     }
 }

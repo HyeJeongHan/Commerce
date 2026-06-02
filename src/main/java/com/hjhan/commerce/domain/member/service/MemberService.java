@@ -42,8 +42,31 @@ public class MemberService {
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        String token = jwtProvider.createAccessToken(member.getId(), member.getRole().name());
-        return new TokenResponse(token);
+        String accessToken = jwtProvider.createAccessToken(member.getId(), member.getRole().name());
+        String refreshToken = jwtProvider.createRefreshToken(member.getId());
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    public TokenResponse refresh(RefreshTokenRequest request) {
+        Long memberId = jwtProvider.getMemberIdFromRefreshToken(request.refreshToken());
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String newAccessToken = jwtProvider.createAccessToken(member.getId(), member.getRole().name());
+        String newRefreshToken = jwtProvider.createRefreshToken(member.getId());
+        return new TokenResponse(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void changePassword(Long memberId, PasswordChangeRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.currentPassword(), member.getPassword())) {
+            throw new BusinessException(ErrorCode.CURRENT_PASSWORD_MISMATCH);
+        }
+
+        member.changePassword(passwordEncoder.encode(request.newPassword()));
     }
 
     public MemberResponse getMyInfo(Long memberId) {

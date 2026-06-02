@@ -1,13 +1,16 @@
 package com.hjhan.commerce.domain.order.controller;
 
 import com.hjhan.commerce.domain.order.dto.OrderResponse;
+import com.hjhan.commerce.domain.order.dto.OrderStatusUpdateRequest;
 import com.hjhan.commerce.domain.order.service.OrderService;
 import com.hjhan.commerce.global.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +50,12 @@ public class OrderController {
     public ApiResponse<OrderResponse> cancelOrder(@AuthenticationPrincipal Long memberId,
                                                   @PathVariable Long orderId) {
         return ApiResponse.ok("주문이 취소되었습니다", orderService.cancelOrder(memberId, orderId));
+    }
+
+    @PatchMapping("/{orderId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<OrderResponse> updateStatus(@PathVariable Long orderId,
+                                                   @RequestBody @Valid OrderStatusUpdateRequest request) {
+        return ApiResponse.ok(orderService.updateStatus(orderId, request.status()));
     }
 }
